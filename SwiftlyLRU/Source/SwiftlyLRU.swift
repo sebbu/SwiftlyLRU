@@ -95,7 +95,7 @@ class SwiftlyLRU<K : Hashable, V> : Printable {
     let capacity: Int
     var length = 0
     
-    private let queue: LinkedList<K, V>
+    internal let queue: LinkedList<K, V>
     private var hashtable: [K : Node<K, V>]
     
     /**

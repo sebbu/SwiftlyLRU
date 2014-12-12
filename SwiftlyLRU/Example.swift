@@ -54,11 +54,50 @@ class ViewController: UIViewController {
         
         //Describe
         println(cache)
+        
+        // Create a NSCoding compliant cache with capacity 7
+        let lru = LRU(capacity: 7)
+        lru.put("AAPL", 114.63)
+        lru.put("GOOG", 533.75)
+        lru.put("YHOO", 50.67)
+        lru.put("TWTR", 38.91)
+        lru.put("BABA", 109.89)
+        lru.put("YELP", 55.17)
+        lru.put("BABA", 109.80)
+        lru.put("TSLA", 231.43)
+        lru.put("AAPL", 113.41)
+        lru.put("GOOG", 533.60)
+        lru.put("AAPL", 113.01)
+        
+        //Retrieve
+        if let item: AnyObject = lru.get("AAPL") {
+            println("Key: AAPL Value: \(item)")
+        } else {
+            println("Item not found.")
+        }
+        
+        //Describe
+        println(lru)
+        
+        // Save to disk
+        let myPathList = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)
+        let path = myPathList[0].stringByAppendingPathComponent("LRU.archive")
+        
+        if NSKeyedArchiver.archiveRootObject(lru, toFile: path) {
+            println("success")
+        } else {
+            println("failed")
+        }
+        
+        // fetch from disk
+        let unarchivedLRU = NSKeyedUnarchiver.unarchiveObjectWithFile(path) as LRU
+        
+        //Describe
+        println(unarchivedLRU)
     }
-
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
-
+        
     }
 }
-
