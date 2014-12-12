@@ -27,6 +27,14 @@ import Foundation
 class LRU: NSObject, NSCoding, Printable {
     
     private var cache:SwiftlyLRU<NSObject, AnyObject>!
+
+    var capacity: Int {
+        return self.cache.capacity
+    }
+
+    var length: Int {
+        return self.cache.length
+    }
     
     // MARK: -
     
