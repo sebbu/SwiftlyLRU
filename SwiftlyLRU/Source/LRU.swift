@@ -24,14 +24,14 @@
 
 import Foundation
 
-class LRU: NSObject, NSCoding, Printable {
+class LRU: NSObject, NSCoding {
     
-    private var cache:SwiftlyLRU<NSObject, AnyObject>!
-
+    private var cache:SwiftlyLRU<NSObject, AnyObject>
+    
     var capacity: Int {
         return self.cache.capacity
     }
-
+    
     var length: Int {
         return self.cache.length
     }
@@ -50,10 +50,10 @@ class LRU: NSObject, NSCoding, Printable {
         
         var counter = decoder.decodeIntegerForKey("counter")
         while counter > 0 {
-            let itemDict = decoder.decodeObjectForKey(String(counter)) as [NSObject : AnyObject]
+            let itemDict = decoder.decodeObjectForKey(String(counter)) as! [NSObject : AnyObject]
             let itemKey = Array(itemDict.keys)[0]
             self.cache[itemKey] = itemDict[itemKey]
-            counter--
+            counter -= 1
         }
     }
     
@@ -64,7 +64,7 @@ class LRU: NSObject, NSCoding, Printable {
         while queueCurrent != nil {
             let key:NSObject = queueCurrent!.key
             if let value:AnyObject = queueCurrent!.value {
-                counter++
+                counter += 1
                 encoder.encodeObject([key: value], forKey: String(counter))
             }
             queueCurrent = queueCurrent?.next

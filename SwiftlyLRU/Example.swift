@@ -30,7 +30,7 @@ class ViewController: UIViewController {
         super.viewDidLoad()
 
         //Create cache with capacity
-        var cache = SwiftlyLRU<String, Float>(capacity: 7)
+        let cache = SwiftlyLRU<String, Float>(capacity: 7)
         
         //Add Key, Value pairs
         cache["AAPL"] = 114.63
@@ -47,13 +47,13 @@ class ViewController: UIViewController {
         
         //Retrieve
         if let item = cache["AAPL"] {
-            println("Key: AAPL Value: \(item)")
+            print("Key: AAPL Value: \(item)")
         } else {
-            println("Item not found.")
+            print("Item not found.")
         }
         
         //Describe
-        println(cache)
+        print(cache)
         
         // Create a NSCoding compliant cache with capacity 7
         let lru = LRU(capacity: 7)
@@ -71,29 +71,29 @@ class ViewController: UIViewController {
         
         //Retrieve
         if let item: AnyObject = lru.get("AAPL") {
-            println("Key: AAPL Value: \(item)")
+            print("Key: AAPL Value: \(item)")
         } else {
-            println("Item not found.")
+            print("Item not found.")
         }
         
         //Describe
-        println(lru)
+        print(lru)
         
         // Save to disk
         let myPathList = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)
-        let path = myPathList[0].stringByAppendingPathComponent("LRU.archive")
+        let path = (myPathList[0] as NSString).stringByAppendingPathComponent("LRU.archive")
         
         if NSKeyedArchiver.archiveRootObject(lru, toFile: path) {
-            println("success")
+            print("success")
         } else {
-            println("failed")
+            print("failed")
         }
         
         // fetch from disk
-        let unarchivedLRU = NSKeyedUnarchiver.unarchiveObjectWithFile(path) as LRU
+        let unarchivedLRU = NSKeyedUnarchiver.unarchiveObjectWithFile(path) as! LRU
         
         //Describe
-        println(unarchivedLRU)
+        print(unarchivedLRU)
     }
     
     override func didReceiveMemoryWarning() {
