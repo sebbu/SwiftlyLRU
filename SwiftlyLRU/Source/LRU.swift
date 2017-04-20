@@ -26,7 +26,7 @@ import Foundation
 
 class LRU: NSObject, NSCoding {
     
-    private var cache:SwiftlyLRU<NSObject, AnyObject>
+    private let cache: SwiftlyLRU<AnyHashable, Any>
     
     var capacity: Int {
         return self.cache.capacity
@@ -39,54 +39,55 @@ class LRU: NSObject, NSCoding {
     // MARK: -
     
     init(capacity: Int){
-        self.cache = SwiftlyLRU<NSObject, AnyObject>(capacity: capacity)
+        self.cache = SwiftlyLRU(capacity: capacity)
     }
     
     // MARK: NSCoding
     
     required init(coder decoder: NSCoder) {
-        let capacity = decoder.decodeIntegerForKey("capacity")
-        self.cache = SwiftlyLRU<NSObject, AnyObject>(capacity: capacity)
+        let capacity = decoder.decodeInteger(forKey: "capacity")
+        self.cache = SwiftlyLRU<AnyHashable, Any>(capacity: capacity)
         
-        var counter = decoder.decodeIntegerForKey("counter")
+        var counter = decoder.decodeInteger(forKey: "counter")
         while counter > 0 {
-            let itemDict = decoder.decodeObjectForKey(String(counter)) as! [NSObject : AnyObject]
-            let itemKey = Array(itemDict.keys)[0]
+            let itemDict = decoder.decodeObject(forKey: String(counter)) as! [AnyHashable : Any]
+            let itemKeys = Array(itemDict.keys)
+            let itemKey = itemKeys[0]
             self.cache[itemKey] = itemDict[itemKey]
             counter -= 1
         }
     }
     
-    func encodeWithCoder(encoder: NSCoder) {
+    
+    func encode(with encoder: NSCoder) {
         var counter = 0
         var queueCurrent = self.cache.queue.head
         
-        while queueCurrent != nil {
-            let key:NSObject = queueCurrent!.key
-            if let value:AnyObject = queueCurrent!.value {
+        while let key = queueCurrent?.key {
+            if let value = queueCurrent!.value {
                 counter += 1
-                encoder.encodeObject([key: value], forKey: String(counter))
+                encoder.encode([key: value], forKey: String(counter))
             }
             queueCurrent = queueCurrent?.next
         }
         
-        encoder.encodeInteger(self.cache.capacity, forKey: "capacity")
-        encoder.encodeInteger(counter, forKey: "counter")
+        encoder.encode(self.cache.capacity, forKey: "capacity")
+        encoder.encode(counter, forKey: "counter")
     }
     
     // MARK: Printable
     
-    override var description : String {
+    override var description: String {
         return "LRU Cache(\(self.cache.length)) \n" + self.cache.queue.display()
     }
     
     // MARK: -
     
-    func put(key: NSObject, _ value: AnyObject) {
+    func put(_ key: AnyHashable, _ value: Any) {
         self.cache[key] = value
     }
     
-    func get(key: NSObject) -> AnyObject? {
+    func get(_ key: AnyHashable) -> Any? {
         return self.cache[key]
     }
     

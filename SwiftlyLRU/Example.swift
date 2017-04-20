@@ -70,7 +70,7 @@ class ViewController: UIViewController {
         lru.put("AAPL", 113.01)
         
         //Retrieve
-        if let item: AnyObject = lru.get("AAPL") {
+        if let item = lru.get("AAPL") {
             print("Key: AAPL Value: \(item)")
         } else {
             print("Item not found.")
@@ -80,8 +80,8 @@ class ViewController: UIViewController {
         print(lru)
         
         // Save to disk
-        let myPathList = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)
-        let path = (myPathList[0] as NSString).stringByAppendingPathComponent("LRU.archive")
+        let myPathList = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)
+        let path = (myPathList[0] as NSString).appendingPathComponent("LRU.archive")
         
         if NSKeyedArchiver.archiveRootObject(lru, toFile: path) {
             print("success")
@@ -90,7 +90,7 @@ class ViewController: UIViewController {
         }
         
         // fetch from disk
-        let unarchivedLRU = NSKeyedUnarchiver.unarchiveObjectWithFile(path) as! LRU
+        let unarchivedLRU = NSKeyedUnarchiver.unarchiveObject(withFile: path) as! LRU
         
         //Describe
         print(unarchivedLRU)
