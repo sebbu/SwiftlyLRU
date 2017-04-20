@@ -28,10 +28,10 @@ import Foundation
         lru.put("AAPL", 113.01)
         
         //Retrieve
-        if let item: AnyObject = lru.get("AAPL") {
-            println("Key: AAPL Value: \(item)")
+        if let item = lru.get("AAPL") {
+            print("Key: AAPL Value: \(item)")
         } else {
-            println("Item not found.")
+            print("Item not found.")
         }
 
 /* OUTPUT    
@@ -39,7 +39,7 @@ import Foundation
 */
         
         //Describe
-        println(lru)
+        print(lru)
         
 /* OUTPUT
     LRU Cache(7) 
@@ -53,20 +53,20 @@ import Foundation
 */
         
         // Save to disk
-        let myPathList = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)
-        let path = myPathList[0].stringByAppendingPathComponent("LRU.archive")
+        let myPathList = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)
+        let path = (myPathList[0] as NSString).appendingPathComponent("LRU.archive")
         
         if NSKeyedArchiver.archiveRootObject(lru, toFile: path) {
-            println("success")
+            print("success")
         } else {
-            println("failed")
+            print("failed")
         }
         
         // fetch from disk
-        let unarchivedLRU = NSKeyedUnarchiver.unarchiveObjectWithFile(path) as LRU
+        let unarchivedLRU = NSKeyedUnarchiver.unarchiveObject(withFile: path) as! LRU
         
         //Describe
-        println(unarchivedLRU)
+        print(unarchivedLRU)
 
 /* OUTPUT
     LRU Cache(7) 
